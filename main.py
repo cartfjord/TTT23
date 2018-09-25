@@ -5,7 +5,7 @@ import cv2
 
 import tifffile as tiff
 
-from train import train_polyp
+from frcnn_train import train_polyp
 
 
 def loadImages(path):
