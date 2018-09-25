@@ -188,13 +188,7 @@ def predict(args_):
         print('predict image from {}'.format(path))
         predict_single_image(path, model_rpn, model_classifier_only, cfg, class_mapping)
 
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', '-p', default='images/000010.png', help='image path')
     return parser.parse_args()
-
-
-if __name__ == '__main__':
-    args = parse_args()
-    predict(args)
