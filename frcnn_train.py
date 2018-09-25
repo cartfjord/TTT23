@@ -2,6 +2,8 @@ import pickle
 import pprint
 import random
 import time
+import os
+import numpy as np
 
 from keras import backend as K
 from keras.optimizers import Adam, SGD, RMSprop
