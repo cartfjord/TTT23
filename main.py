@@ -1,12 +1,12 @@
-import keras
 import matplotlib.pyplot as plt
-import scipy 
 import os
 import numpy as np
-from PIL import Image
 import cv2
 
 import tifffile as tiff
+
+from train import train_polyp
+
 
 def loadImages(path):
     files = os.listdir(path)
@@ -45,15 +45,13 @@ def generateTrainingFormat(labels, path, filename):
             if area > 25:
                 x2 = x1 + w
                 y2 = y1 + h
-                f.write("."+path+"/"+files[i]+","+str(x1)+","+str(y1)+","+str(x2)+","+str(y2)+","+"Polyp\n")
+                f.write(path+"/"+files[i]+","+str(x1)+","+str(y1)+","+str(x2)+","+str(y2)+","+"Polyp\n")
     
     f.close()
 
 
-
-
-
 def main():
+
     train_images = loadImages('./data/train/image')
     train_labels = loadImages('./data/train/label')
 
@@ -62,11 +60,15 @@ def main():
 
     generateTrainingFormat(train_labels, './data/train/label', 'BoundingBoxesTrain.txt')
 
+
+    train_polyp()
+
+
     cv2.rectangle(train_images[328],(49,176),(121,238), (0,0,255), 3)
     cv2.rectangle(train_images[328],(187,134),(231,178), (0,0,255), 3)
 
     showImageOverlay(train_images[328],train_labels[328])
 
-    showImageOverlay(train_images[8], train_labels[8]);
+    showImageOverlay(train_images[8], train_labels[8])
     
 main()
