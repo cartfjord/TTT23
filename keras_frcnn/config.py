@@ -53,16 +53,23 @@ class Config:
         # https://github.com/fchollet/deep-learning-models/releases/download/v0.2/resnet50_weights_th_dim_ordering_th_kernels_notop.h5
         # https://github.com/fchollet/deep-learning-models/releases/download/v0.2/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
 
-        self.model_path = 'model_trained/model_frcnn.vgg.hdf5'
+        self.model_path = './model/PolypModel.hdf5'
 
-        # params add by me
+        self.train_images_path = './data/train/image'
+        self.train_labels_path = './data/train/label'
+        self.test_images_path = './data/test/image'
+        self.test_labels_path = './data/test/label'
+        self.results_path = './results/{}.png'
+
+        # Custom cfg parameters
         self.data_dir = '.data/'
-        self.num_epochs = 3000
+        self.num_epochs = 10
+        self.epoch_len = 100
 
-        self.kitti_simple_label_file = 'kitti_simple_label.txt'
+        #self.kitti_simple_label_file = 'kitti_simple_label.txt'
 
         # TODO: this field is set to simple_label txt, which in very simple format like:
         # TODO: /path/image_2/000000.png,712.40,143.00,810.73,307.92,Pedestrian, see kitti_simple_label.txt for detail
-        self.simple_label_file = 'simple_label.txt'
+        self.simple_label_file = './BoundingBoxesTrain.txt'
 
         self.config_save_file = 'config.pickle'

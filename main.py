@@ -6,7 +6,9 @@ import cv2
 import tifffile as tiff
 
 from frcnn_train import train_polyp
-
+from frcnn_test import parse_args, predict
+from keras_frcnn import config
+from keras_frcnn import resnet as nn
 
 def loadImages(path):
     files = os.listdir(path)
@@ -51,18 +53,36 @@ def generateTrainingFormat(labels, path, filename):
 
 
 def main():
+    cfg = config.Config()
 
-    train_images = loadImages('./data/train/image')
-    train_labels = loadImages('./data/train/label')
+    train_images = loadImages(cfg.train_images_path)
+    train_labels = loadImages(cfg.train_labels_path)
 
-    test_images = loadImages('./data/test/image')
-    test_labels = loadImages('./data/test/label')
+    test_images = loadImages(cfg.test_images_path)
+    test_labels = loadImages(cfg.test_labels_path)
 
-    generateTrainingFormat(train_labels, './data/train/label', 'BoundingBoxesTrain.txt')
+    generateTrainingFormat(train_labels, cfg.train_labels_path, cfg.simple_label_file)
 
 
-    train_polyp()
+    ##########################################################################################
+    # Configuration parameters that can be changed.
+    cfg.num_epochs = 10
+    cfg.epoch_len = 100
+    cfg.use_horizontal_flips = True
+    cfg.use_vertical_flips = True
+    cfg.rot_90 = True
+    cfg.num_rois = 32
+    ##########################################################################################
 
+    cfg.base_net_weights = os.path.join('./model/', nn.get_weight_path()) #What is this? Pretrained model?
+    #It looks for './model/resnet50_weights_tf_dim_ordering_tf_kernels.h5'
+
+    ## Train the model
+    #train_polyp(cfg)
+
+    ##
+    #predict(cfg)
+    predict(parse_args(cfg))
 
     cv2.rectangle(train_images[328],(49,176),(121,238), (0,0,255), 3)
     cv2.rectangle(train_images[328],(187,134),(231,178), (0,0,255), 3)

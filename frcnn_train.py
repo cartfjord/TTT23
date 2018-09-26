@@ -17,19 +17,7 @@ from keras_frcnn import resnet as nn
 from keras_frcnn.simple_parser import get_data
 from keras_frcnn import losses as losses_fn
 
-def train_polyp():
-    # config for data argument
-    cfg = config.Config()
-
-    cfg.use_horizontal_flips = True
-    cfg.use_vertical_flips = True
-    cfg.rot_90 = True
-    cfg.num_rois = 32
-    cfg.base_net_weights = os.path.join('./model/', nn.get_weight_path())
-
-    # TODO: the only file should to be change for other data to train
-    cfg.model_path = './model/PolypModel.hdf5'
-    cfg.simple_label_file = './BoundingBoxesTrain.txt'
+def train_polyp(cfg):
 
     all_images, classes_count, class_mapping = get_data(cfg.simple_label_file)
 
@@ -102,8 +90,8 @@ def train_polyp():
                              metrics={'dense_class_{}'.format(len(classes_count)): 'accuracy'})
     model_all.compile(optimizer='sgd', loss='mae')
 
-    epoch_length = 100#1000
-    num_epochs = 10#int(cfg.num_epochs)
+    epoch_length = cfg.epoch_len
+    num_epochs = cfg.num_epochs
     iter_num = 0
 
     losses = np.zeros((epoch_length, 5))
