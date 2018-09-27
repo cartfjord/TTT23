@@ -81,8 +81,8 @@ def predict_single_image(img_path, model_rpn, model_classifier_only, cfg, class_
     # convert from (x1,y1,x2,y2) to (x,y,w,h)
     result[:, 2] -= result[:, 0]
     result[:, 3] -= result[:, 1]
-    bbox_threshold = 0.8
-
+    ##bbox_threshold = 0.8
+    bbox_threshold = 0.1
     # apply the spatial pyramid pooling to the proposed regions
     boxes = dict()
     for jk in range(result.shape[0] // cfg.num_rois + 1):
@@ -101,8 +101,8 @@ def predict_single_image(img_path, model_rpn, model_classifier_only, cfg, class_
         [p_cls, p_regr] = model_classifier_only.predict([F, rois])
 
         for ii in range(p_cls.shape[1]):
-            if np.max(p_cls[0, ii, :]) < bbox_threshold or np.argmax(p_cls[0, ii, :]) == (p_cls.shape[2] - 1):
-                continue
+            #if np.max(p_cls[0, ii, :]) < bbox_threshold or np.argmax(p_cls[0, ii, :]) == (p_cls.shape[2] - 1):
+                #continue
 
             cls_num = np.argmax(p_cls[0, ii, :])
             if cls_num not in boxes.keys():
@@ -122,6 +122,8 @@ def predict_single_image(img_path, model_rpn, model_classifier_only, cfg, class_
                 [cfg.rpn_stride * x, cfg.rpn_stride * y, cfg.rpn_stride * (x + w), cfg.rpn_stride * (y + h),
                  np.max(p_cls[0, ii, :])])
     # add some nms to reduce many boxes
+    if(len(boxes) == 0):
+        print("No bounding boxes!")
     for cls_num, box in boxes.items():
         boxes_nms = roi_helpers.non_max_suppression_fast(box, overlap_thresh=0.5)
         boxes[cls_num] = boxes_nms
@@ -131,11 +133,11 @@ def predict_single_image(img_path, model_rpn, model_classifier_only, cfg, class_
             print('{} prob: {}'.format(b[0: 4], b[-1]))
     img = draw_boxes_and_label_on_image_cv2(img, class_mapping, boxes)
     print('Elapsed time = {}'.format(time.time() - st))
-    cv2.imshow('image', img)
+    #cv2.imshow('image', img)
     result_path = './results/{}.png'.format(os.path.basename(img_path).split('.')[0])
     print('result saved into ', result_path)
     cv2.imwrite(result_path, img)
-    cv2.waitKey(0)
+    #cv2.waitKey(0)
 
 
 def predict(args_):

@@ -209,7 +209,7 @@ def non_max_suppression_fast(boxes, overlap_thresh=0.9, max_boxes=300):
     return boxes
 
 
-def rpn_to_roi(rpn_layer, regr_layer, cfg, dim_ordering, use_regr=True, max_boxes=300, overlap_thresh=0.9):
+def rpn_to_roi(rpn_layer, regr_layer, cfg, dim_ordering, use_regr=True, max_boxes=3, overlap_thresh=0.9):
     regr_layer = regr_layer / cfg.std_scaling
 
     anchor_sizes = cfg.anchor_box_scales
