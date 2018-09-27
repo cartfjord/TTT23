@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import os
 import numpy as np
@@ -19,6 +20,15 @@ def loadImages(path):
         images.append(tiff.imread(os.path.join(path, filename)))
     print('Done!\n')
     return images
+
+def convertImages(path):
+    files = os.listdir(path)
+    for filename in files:
+        new_filename = filename.replace('tif', 'png')
+        image = tiff.imread(os.path.join(path, filename))
+        print(image)
+        
+        matplotlib.image.imsave(os.path.join(path, new_filename), image)
 
 def showImage(image):
     plt.figure()
