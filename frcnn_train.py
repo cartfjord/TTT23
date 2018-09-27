@@ -217,6 +217,8 @@ def train_polyp(cfg):
                         print('Elapsed time: {}'.format(time.time() - start_time))
 
                     curr_loss = loss_rpn_cls + loss_rpn_regr + loss_class_cls + loss_class_regr
+                    if cfg.verbose:
+                        print("Current loss: {}", curr_loss)
                     iter_num = 0
                     start_time = time.time()
 
