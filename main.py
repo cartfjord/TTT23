@@ -66,29 +66,29 @@ def main():
 
     ##########################################################################################
     # Configuration parameters that can be changed.
-    cfg.num_epochs = 10
+    cfg.num_epochs = 600
     cfg.epoch_len = 100
     cfg.use_horizontal_flips = True
     cfg.use_vertical_flips = True
     cfg.rot_90 = True
-    cfg.num_rois = 32
+    cfg.num_rois = 8
     ##########################################################################################
 
     cfg.base_net_weights = os.path.join('./model/', nn.get_weight_path()) #What is this? Pretrained model?
     #It looks for './model/resnet50_weights_tf_dim_ordering_tf_kernels.h5'
 
     ## Train the model
-    #train_polyp(cfg)
+    train_polyp(cfg)
 
     ##
     #predict(cfg)
-    predict(parse_args(cfg))
+    #predict(parse_args(cfg))
 
-    cv2.rectangle(train_images[328],(49,176),(121,238), (0,0,255), 3)
-    cv2.rectangle(train_images[328],(187,134),(231,178), (0,0,255), 3)
+#    cv2.rectangle(train_images[328],(49,176),(121,238), (0,0,255), 3)
+#    cv2.rectangle(train_images[328],(187,134),(231,178), (0,0,255), 3)
 
-    showImageOverlay(train_images[328],train_labels[328])
+ #   showImageOverlay(train_images[328],train_labels[328])
 
-    showImageOverlay(train_images[8], train_labels[8])
+  #  showImageOverlay(train_images[8], train_labels[8])
     
 main()
