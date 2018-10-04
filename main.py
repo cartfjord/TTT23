@@ -119,11 +119,6 @@ def main():
 
  #   showImageOverlay(train_images[328],train_labels[328])
 
-<<<<<<< HEAD
-  #  showImageOverlay(train_images[8], train_labels[8])
-    
-=======
-    showImageOverlay(train_images[8], train_labels[8])
+    #showImageOverlay(train_images[8], train_labels[8])
 
->>>>>>> a
 main()
