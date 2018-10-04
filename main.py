@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 import cv2
+import tarfile
 
 import tifffile as tiff
 
@@ -17,7 +18,12 @@ def loadImages(path):
     images = []
 
     for filename in files:
-        images.append(tiff.imread(os.path.join(path, filename)))
+        if (filename.endswith('.tif')):
+            images.append(tiff.imread(os.path.join(path, filename)))
+            #print(images[-1].shape)
+        else:
+            images.append(cv2.imread(os.path.join(path, filename)))
+            #print(images[-1].shape)
     print('Done!\n')
     return images
 
@@ -27,7 +33,7 @@ def convertImages(path):
         new_filename = filename.replace('tif', 'png')
         image = tiff.imread(os.path.join(path, filename))
         print(image)
-        
+
         matplotlib.image.imsave(os.path.join(path, new_filename), image)
 
 def showImage(image):
@@ -41,13 +47,23 @@ def showImageOverlay(image, label):
     plt.imshow(label, alpha=0.3)
     plt.show()
 
+#path = 'model/PolypModel.hdf5.tar.gz'
+def extractTarGz(file):
+    if (os.path.exists(file)):
+        if (file.endswith("tar.gz")):
+            tar = tarfile.open(file, "r:gz")
+            tar.extractall()
+            tar.close()
 
 def generateTrainingFormat(labels, path, filename):
     files = os.listdir(path)
     assert(len(files) == len(labels))
     f = open(filename, 'w')
-    
+
+    print(type(np.array(labels[0])))
+
     for i in range(0, len(labels)):
+        #_, contours, _ = cv2.findContours(np.array(labels[i]), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         _, contours, _ = cv2.findContours(np.array(labels[i]), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         #contours = sorted(
         # contours, key = cv2.contourArea, reverse = True)[:10]
@@ -58,7 +74,7 @@ def generateTrainingFormat(labels, path, filename):
                 x2 = x1 + w
                 y2 = y1 + h
                 f.write(path+"/"+files[i]+","+str(x1)+","+str(y1)+","+str(x2)+","+str(y2)+","+"Polyp\n")
-    
+
     f.close()
 
 
@@ -68,8 +84,12 @@ def main():
     train_images = loadImages(cfg.train_images_path)
     train_labels = loadImages(cfg.train_labels_path)
 
+    train_labels = [cv2.cvtColor(lbl, cv2.COLOR_BGR2GRAY) for lbl in train_labels]
+    #print("shape:", train_labels[-1].shape)
+
     test_images = loadImages(cfg.test_images_path)
     test_labels = loadImages(cfg.test_labels_path)
+    test_labels = [cv2.cvtColor(lbl, cv2.COLOR_BGR2GRAY) for lbl in test_labels]
 
     generateTrainingFormat(train_labels, cfg.train_labels_path, cfg.simple_label_file)
 
@@ -99,6 +119,11 @@ def main():
 
  #   showImageOverlay(train_images[328],train_labels[328])
 
+<<<<<<< HEAD
   #  showImageOverlay(train_images[8], train_labels[8])
     
+=======
+    showImageOverlay(train_images[8], train_labels[8])
+
+>>>>>>> a
 main()
