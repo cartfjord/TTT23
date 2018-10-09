@@ -2,9 +2,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 import os
 import numpy as np
+import scipy
 import cv2
 import tarfile
-
+import DataAugmentation
 import tifffile as tiff
 
 from frcnn_train import train_polyp
@@ -87,10 +88,52 @@ def main():
     train_labels = [cv2.cvtColor(lbl, cv2.COLOR_BGR2GRAY) for lbl in train_labels]
     #print("shape:", train_labels[-1].shape)
 
+
+    for i in range(0, len(train_labels)):
+        _, train_labels[i] = cv2.threshold(train_labels[i], 50, 255, cv2.THRESH_BINARY)
+
+
+
     test_images = loadImages(cfg.test_images_path)
     test_labels = loadImages(cfg.test_labels_path)
     test_labels = [cv2.cvtColor(lbl, cv2.COLOR_BGR2GRAY) for lbl in test_labels]
 
+    Augmentor = DataAugmentation.DataAugmentation()
+    cv2.imshow("Original_label", train_labels[0])
+
+    augmented_images = []
+    augmented_labels = []
+
+    image_names = os.listdir("./data_png/train/image")
+    label_names = os.listdir("./data_png/train/label")
+
+    print("Type", type(image_names))
+    for i in range(0, len(train_images)):
+        print("saving image: ", i)
+        for j in range(0, 3):
+            augmented_images_1, augmented_labels_1 = Augmentor.augment(train_images[i], train_labels[i])
+            augmented_images.append(augmented_images_1)
+            augmented_labels.append(augmented_labels_1)
+            matplotlib.image.imsave("./data_png/train_augmented/image/"+image_names[i][:-4]+"_aug_"+str(j)+".png", cv2.cvtColor(augmented_images_1, cv2.COLOR_BGR2RGB))
+            matplotlib.image.imsave("./data_png/train_augmented/label/"+label_names[i][:-4]+"_aug_"+str(j)+".png", augmented_labels_1)
+            #scipy.misc.imsave("")
+
+
+
+
+
+
+    cv2.imshow("26_augmented_1", augmented_images[0])
+    cv2.imshow("26_augmented_2", augmented_images[1])
+    cv2.imshow("26_augmented_3", augmented_images[2])
+
+    cv2.imshow("26_augmented_label_1", augmented_labels[0])
+    cv2.imshow("26_augmented_label_2", augmented_labels[1])
+    cv2.imshow("26_augmented_label_3", augmented_labels[2])
+
+
+    #showImageOverlay(train_images[0], train_labels[0])
+    """
     generateTrainingFormat(train_labels, cfg.train_labels_path, cfg.simple_label_file)
 
 
@@ -108,11 +151,11 @@ def main():
     #It looks for './model/resnet50_weights_tf_dim_ordering_tf_kernels.h5'
 
     ## Train the model
-    train_polyp(cfg)
+    #train_polyp(cfg)
 
     ##
     #predict(cfg)
-    #predict(parse_args(cfg))
+    predict(parse_args(cfg))
 
 #    cv2.rectangle(train_images[328],(49,176),(121,238), (0,0,255), 3)
 #    cv2.rectangle(train_images[328],(187,134),(231,178), (0,0,255), 3)
@@ -120,5 +163,5 @@ def main():
  #   showImageOverlay(train_images[328],train_labels[328])
 
     #showImageOverlay(train_images[8], train_labels[8])
-
+    """
 main()
